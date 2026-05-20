@@ -21,7 +21,7 @@
                     Clicked="OnRefreshClicked"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"/>
-                
+
                 <Button 
                     Text="Print Debug"
                     Clicked="OnPrintClicked"
@@ -69,7 +69,13 @@
                 Clicked="OnClearDataClicked"
                 BackgroundColor="Red"
                 TextColor="White"/>
-            
+
+            <Button 
+                Text="Test Notification"
+                Clicked="OnTestNotificationClicked"
+                BackgroundColor="Purple"
+                TextColor="White"/>
+
             <Label 
                 Text="Debug: Shows local device data"
                 FontSize="12"

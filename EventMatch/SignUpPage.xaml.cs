@@ -30,18 +30,18 @@ public partial class SignUpPage : ContentPage
 
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            await DisplayAlertAsync("Error", "Please fill all fields.", "OK");
+            await DisplayAlert("Error", "Please fill all fields.", "OK");
             return;
         }
         if (password != confirm)
         {
-            await DisplayAlertAsync("Error", "Passwords do not match.", "OK");
+            await DisplayAlert("Error", "Passwords do not match.", "OK");
             return;
         }
         var existing = await _userDb.GetUserByEmailAsync(email);
         if (existing != null)
         {
-            await DisplayAlertAsync("Error", "User already exists.", "OK");
+            await DisplayAlert("Error", "User already exists.", "OK");
             return;
         }
         // Try to register user in cloud first
@@ -51,19 +51,19 @@ public partial class SignUpPage : ContentPage
             var registered = await _cloudAuth.RegisterUserAsync(newUser);
             if (!registered)
             {
-                await DisplayAlertAsync("Error", "Registration failed on server.", "OK");
+                await DisplayAlert("Error", "Registration failed on server.", "OK");
                 return;
             }
         }
         catch
         {
-            await DisplayAlertAsync("Error", "Registration failed (network/server error).", "OK");
+            await DisplayAlert("Error", "Registration failed (network/server error).", "OK");
             return;
         }
 
         // Save locally as cache after successful cloud registration
         await _userDb.AddUserAsync(newUser);
-        await DisplayAlertAsync("Success", "Account created!", "OK");
+        await DisplayAlert("Success", "Account created!", "OK");
         await Shell.Current.GoToAsync("//LoginPage");
     }
 }

@@ -83,6 +83,7 @@ Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (h
             // Register cloud-only services always
             builder.Services.AddSingleton<CloudAuthService>();
             builder.Services.AddSingleton<CloudGroupService>();
+            builder.Services.AddSingleton<NotificationService>();
 
             // Register local DB and hybrid services only when not in cloud-only mode
             if (!cloudOnly)
@@ -231,6 +232,28 @@ Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (h
                     }
                 });
             }
+
+            // Initialize notification service for upcoming event reminders
+            try
+            {
+                var notificationService = app.Services.GetService<NotificationService>();
+                if (notificationService != null)
+                {
+                    _ = System.Threading.Tasks.Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await notificationService.InitializeAsync();
+                            System.Diagnostics.Debug.WriteLine("[MauiProgram] Notification service initialized");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[MauiProgram] Notification service init error: {ex.Message}");
+                        }
+                    });
+                }
+            }
+            catch { }
 
             return app;
         }

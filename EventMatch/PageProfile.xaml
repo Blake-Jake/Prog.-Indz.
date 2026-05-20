@@ -35,8 +35,30 @@
 
                     <Label Text="Add tags that interest you" Grid.Column="1" Grid.Row="1" FontSize="12" TextColor="#D8BFD8" Margin="2,8,0,0" />
 
-                    <Editor x:Name="TagEntry" Grid.Column="1" Grid.Row="2" AutoSize="TextChanges" BackgroundColor="#80232323" TextColor="White" Placeholder="#tag" HeightRequest="90" MinimumHeightRequest="72" MaxLength="200" />
+                    <Button x:Name="SelectTagsButton"
+                            Grid.Column="1"
+                            Grid.Row="2"
+                            Text="Select Tags"
+                            BackgroundColor="#6A5ACD"
+                            TextColor="White"
+                            CornerRadius="8"
+                            HeightRequest="40"
+                            Clicked="OnSelectTagsClicked"
+                            VerticalOptions="Start"
+                            Margin="2,4,0,0" />
                 </Grid>
+
+                <VerticalStackLayout x:Name="SelectedTagsContainer" Spacing="8" Padding="12,12,12,12" BackgroundColor="#1a1a2e">
+                    <Label Text="Your selected tags:" FontSize="12" TextColor="#D8BFD8" Margin="0,0,0,4" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                    <FlexLayout x:Name="SelectedTagsFlexLayout" 
+                               Wrap="Wrap" 
+                               JustifyContent="Center" 
+                               AlignContent="Center" 
+                               AlignItems="Center"
+                               MinimumHeightRequest="50"
+                               Padding="4,4,4,4"
+                               BackgroundColor="#0f0f1e" />
+                </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="12">
                     <!-- Username Entry moved beside profile image below -->

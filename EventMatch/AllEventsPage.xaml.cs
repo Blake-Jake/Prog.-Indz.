@@ -5,6 +5,8 @@ using EventMatch.Models;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System;
+using Microsoft.Extensions.DependencyInjection;
+using SQLite;
 
 namespace EventMatch;
 
@@ -19,38 +21,56 @@ public partial class AllEventsPage : ContentPage
     private HashSet<EventPreviewItem> _selected = new HashSet<EventPreviewItem>();
     private bool _selectionMode = false;
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
 
         var store = new EventStore();
         var events = store.LoadAll();
 
-        var items = events.Select(e => new EventPreviewItem
-        {
-            Details = e.Details,
-            CreatedAt = e.CreatedAt,
-            ScheduledAt = e.ScheduledAt,
-            ImageSource = string.IsNullOrEmpty(e.ImageBase64)
-                ? ImageSource.FromFile("image-placeholder.png")
-                : ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(e.ImageBase64)))
-        }).ToList();
-
-        // Only display favorites for the current user
+        // Get current user's preferred tags
         var currentUser = Session.CurrentUserEmail;
-        var favorites = events
-            .Where(e => e.FavoritedBy != null && e.FavoritedBy.Contains(currentUser))
-            .Select(e => new EventPreviewItem
+        var userDb = Application.Current?.Handler?.MauiContext?.Services.GetService<UserDatabase>();
+        var userProfile = userDb != null ? await userDb.GetProfileByEmailAsync(currentUser) : null;
+        var userPreferredTags = userProfile?.GetPreferredTags() ?? new List<string>();
+
+        // Separate events into two groups
+        List<Event> matchingEvents = new(); // Events with matching tags
+        List<Event> otherEvents = new();    // Events without matching tags
+
+        foreach (var evt in events)
+        {
+            var eventTags = evt.Tags?.Select(t => t.Name?.ToLower().Trim() ?? "").ToList() ?? new List<string>();
+
+            // Check if event has any matching tags
+            bool hasMatchingTag = userPreferredTags.Count > 0 && 
+                                  userPreferredTags.Any(userTag => eventTags.Contains(userTag.ToLower()));
+
+            if (evt.FavoritedBy != null && evt.FavoritedBy.Contains(currentUser))
+            {
+                if (hasMatchingTag)
+                    matchingEvents.Add(evt);
+                else
+                    otherEvents.Add(evt);
+            }
+        }
+
+        // Combine: matching first, then other events
+        var orderedEvents = matchingEvents.Concat(otherEvents).ToList();
+
+        var items = orderedEvents.Select(e => new EventPreviewItem
         {
             Details = e.Details,
             CreatedAt = e.CreatedAt,
             ScheduledAt = e.ScheduledAt,
             ImageSource = string.IsNullOrEmpty(e.ImageBase64)
                 ? ImageSource.FromFile("image-placeholder.png")
-                : ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(e.ImageBase64)))
+                : ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(e.ImageBase64))),
+            HasMatchingTags = userPreferredTags.Count > 0 && 
+                             e.Tags?.Any(t => userPreferredTags.Contains(t.Name?.ToLower().Trim() ?? "")) == true
         }).ToList();
 
-        AllEventsCollectionView.ItemsSource = new ObservableCollection<EventPreviewItem>(favorites);
+        AllEventsCollectionView.ItemsSource = new ObservableCollection<EventPreviewItem>(items);
 
         // Ensure selection UI hidden by default
         var selectBtn = this.FindByName<Button>("SelectAllButton");

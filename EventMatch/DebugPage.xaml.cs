@@ -100,4 +100,17 @@ public partial class DebugPage : ContentPage
             }
         }
     }
+
+    private async void OnTestNotificationClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            await NotificationTestHelper.TriggerTestNotificationAsync();
+            await DisplayAlert("Test", "Check your system notifications for 'An event is coming up'!", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
 }

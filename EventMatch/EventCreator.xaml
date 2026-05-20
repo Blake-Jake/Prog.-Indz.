@@ -29,6 +29,15 @@
        FontSize="13"
        Margin="0,4,0,0"/>
 
+            <!-- Tags input section -->
+            <Label Text="Tags (e.g., #music, #sports)" FontSize="12" TextColor="#D8BFD8" />
+            <Entry x:Name="TagsEntry" 
+                   Placeholder="Enter tags separated by commas" 
+                   PlaceholderColor="#888888"
+                   BackgroundColor="#80232323" 
+                   TextColor="White"
+                   HeightRequest="40" />
+
             <!-- Date & Time pickers -->
             <HorizontalStackLayout Spacing="12" VerticalOptions="Center" HorizontalOptions="Fill">
                 <DatePicker x:Name="EventDatePicker" />

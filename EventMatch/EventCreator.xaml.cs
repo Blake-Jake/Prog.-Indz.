@@ -46,6 +46,8 @@ public partial class EventCreator : ContentPage
         // Parse tags from entry
         var tagsRaw = this.FindByName<Entry>("TagsEntry")?.Text ?? string.Empty;
         var tags = tagsRaw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                          .Select(t => t.TrimStart('#'))  // Remove # prefix if present
+                          .Where(t => !string.IsNullOrEmpty(t))  // Filter out empty tags
                           .Select(t => new Tag { Name = t })
                           .ToList();
 
@@ -64,7 +66,7 @@ public partial class EventCreator : ContentPage
         _store.Add(newEvent);
 
         await DisplayAlert("Saved", "Event saved.", "OK");
-        await Shell.Current.GoToAsync("EventPreview");
+        await Shell.Current.GoToAsync("..", true);
     }
 
     private async void OnPickImageClicked(object sender, EventArgs e)

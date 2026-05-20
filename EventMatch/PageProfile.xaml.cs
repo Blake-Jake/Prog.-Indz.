@@ -3,6 +3,8 @@ using EventMatch.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using SQLite;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EventMatch;
 
@@ -14,6 +16,7 @@ public partial class ProfilePage : ContentPage
     UploadingImage uploadImage { get; set; }
 
     private string _photoBase64 = "";
+    private List<string> _selectedTags = new List<string>();
 
     [PrimaryKey, AutoIncrement]
     public new int Id { get; set; }
@@ -59,7 +62,6 @@ public partial class ProfilePage : ContentPage
         if (_currentProfile != null)
         {
             UsernameEntry.Text = _currentProfile.Username;
-            TagEntry.Text = _currentProfile.Tag;
             DescriptionEditor.Text = _currentProfile.Description;
 
             if (!string.IsNullOrEmpty(_currentProfile.PhotoPath))
@@ -77,6 +79,162 @@ public partial class ProfilePage : ContentPage
 
             var index = RadiusPicker.Items.IndexOf(_currentProfile.RadiusKm.ToString());
             RadiusPicker.SelectedIndex = index >= 0 ? index : 0;
+
+            // Load selected tags
+            _selectedTags = _currentProfile.GetPreferredTags();
+            DisplaySelectedTags();
+        }
+    }
+
+    private void DisplaySelectedTags()
+    {
+        var tagLayout = this.FindByName<FlexLayout>("SelectedTagsFlexLayout");
+        var tagContainer = this.FindByName<VerticalStackLayout>("SelectedTagsContainer");
+
+        if (tagLayout == null || tagContainer == null)
+            return;
+
+        tagLayout.Children.Clear();
+
+        if (_selectedTags.Count == 0)
+        {
+            tagContainer.IsVisible = false;
+            return;
+        }
+
+        tagContainer.IsVisible = true;
+
+        foreach (var tag in _selectedTags.ToList())
+        {
+            var tagToRemove = tag; // Capture for closure
+
+            // Create the remove label with tap gesture
+            var removeLabel = new Label
+            {
+                Text = "×",
+                TextColor = Colors.White,
+                FontSize = 16,
+                Margin = new Thickness(4, 0, 0, 0),
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                HorizontalTextAlignment = TextAlignment.Center
+            };
+
+            var tapGesture = new TapGestureRecognizer();
+            tapGesture.Tapped += (s, e) =>
+            {
+                _selectedTags.Remove(tagToRemove);
+                DisplaySelectedTags();
+            };
+            removeLabel.GestureRecognizers.Add(tapGesture);
+
+            // Create tag content with label and button
+            var tagContent = new HorizontalStackLayout
+            {
+                Spacing = 4,
+                Padding = new Thickness(8, 4, 6, 4),
+                Children =
+                {
+                    new Label
+                    {
+                        Text = $"#{tag}",
+                        TextColor = Colors.White,
+                        FontSize = 11,
+                        FontAttributes = FontAttributes.Bold,
+                        VerticalOptions = LayoutOptions.Center,
+                        Margin = new Thickness(0),
+                        VerticalTextAlignment = TextAlignment.Center
+                    },
+                    removeLabel
+                }
+            };
+
+            // Wrap in a Frame with explicit sizing
+            var tagFrame = new Frame
+            {
+                Content = tagContent,
+                BackgroundColor = Color.FromArgb("#A259FF"),
+                CornerRadius = 16,
+                Padding = new Thickness(0),
+                HasShadow = false,
+                Margin = new Thickness(4, 4, 4, 4),
+                BorderColor = Color.FromArgb("#A259FF"),
+                HeightRequest = 32,
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start
+            };
+
+            tagLayout.Add(tagFrame);
+        }
+    }
+
+     private async void OnSelectTagsClicked(object sender, EventArgs e)
+    {
+        // Define 10 generic tags that are always available
+        var genericTags = new List<string>
+        {
+            "sports",
+            "music",
+            "food",
+            "outdoor",
+            "fitness",
+            "art",
+            "gaming",
+            "tech",
+            "social",
+            "learning"
+        };
+
+        // Get tags from events
+        var store = new EventStore();
+        var events = store.LoadAll();
+
+        // Count tag frequencies from events
+        var tagFrequency = new Dictionary<string, int>();
+        foreach (var evt in events)
+        {
+            foreach (var tag in evt.Tags ?? new List<Tag>())
+            {
+                var tagName = tag.Name?.ToLower().Trim() ?? "";
+                if (!string.IsNullOrEmpty(tagName))
+                {
+                    if (tagFrequency.ContainsKey(tagName))
+                        tagFrequency[tagName]++;
+                    else
+                        tagFrequency[tagName] = 1;
+                }
+            }
+        }
+
+        // Combine generic tags with event tags
+        var allTags = new HashSet<string>(genericTags);
+        foreach (var eventTag in tagFrequency.Keys)
+        {
+            allTags.Add(eventTag);
+        }
+
+        // Sort: first by whether they're in events (frequency), then alphabetically
+        var sortedTags = allTags
+            .OrderByDescending(x => tagFrequency.ContainsKey(x) ? tagFrequency[x] : 0) // Events with tags first
+            .ThenBy(x => x) // Then alphabetically
+            .ToList();
+
+        // Show action sheet with all available tags
+        var action = await DisplayActionSheet(
+            "Select a tag to add",
+            "Cancel",
+            null,
+            sortedTags.ToArray()
+        );
+
+        if (action != null && action != "Cancel")
+        {
+            if (!_selectedTags.Contains(action))
+            {
+                _selectedTags.Add(action);
+                DisplaySelectedTags();
+            }
         }
     }
 
@@ -119,7 +277,7 @@ public partial class ProfilePage : ContentPage
 
         if (string.IsNullOrWhiteSpace(Email))
         {
-            await DisplayAlertAsync("Error", "No user is logged in.", "OK");
+            await DisplayAlert("Error", "No user is logged in.", "OK");
             return;
         }
 
@@ -131,7 +289,7 @@ public partial class ProfilePage : ContentPage
         {
             UserEmail = Email,
             Username = UsernameEntry.Text?.Trim() ?? string.Empty,
-            Tag = TagEntry.Text?.Trim() ?? string.Empty,
+            Tag = "", // Keep for backward compatibility
             RadiusKm = radius,
             Description = DescriptionEditor.Text ?? string.Empty,
             PhotoPath = string.IsNullOrEmpty(_photoBase64)
@@ -139,10 +297,13 @@ public partial class ProfilePage : ContentPage
                 : _photoBase64
         };
 
+        // Save the selected tags
+        profileToSave.SetPreferredTags(_selectedTags);
+
         await _userDb.SaveProfileAsync(profileToSave);
 
         _currentProfile = await _userDb.GetProfileByEmailAsync(Email);
-        await DisplayAlertAsync("Saved", "Profile saved.", "OK");
+        await DisplayAlert("Saved", "Profile saved.", "OK");
     }
 
     private async void OnDeleteAllDataClicked(object sender, EventArgs e)

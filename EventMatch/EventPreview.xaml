@@ -46,15 +46,15 @@
                            FontSize="13"
                            IsVisible="False"/>
 
-                    <Label x:Name="ScheduledAtLabel"
-                           TextColor="#D8BFD8"
+                    <Label x:Name="TagsLabel"
+                           TextColor="#A259FF"
                            FontSize="12"
+                           FontAttributes="Bold"
                            IsVisible="False"/>
 
                     <Label x:Name="CreatedAtLabel"
                            FontSize="12"
-                           TextColor="#D8BFD8"
-                           HorizontalOptions="End"/>
+                           TextColor="#D8BFD8"/>
                 </StackLayout>
             </Grid>
         </Border>
@@ -90,6 +90,19 @@
                 HorizontalOptions="End"
                 VerticalOptions="End"
                 Margin="16"/>
+
+        <!-- TEST NOTIFICATION BUTTON -->
+        <Button x:Name="TestNotificationButton"
+                Text="🔔"
+                WidthRequest="50"
+                HeightRequest="50"
+                CornerRadius="25"
+                BackgroundColor="#AA9370DB"
+                TextColor="White"
+                Clicked="OnTestNotificationClicked"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="16,16,80,16"/>
 
     </Grid>
 

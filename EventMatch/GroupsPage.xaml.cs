@@ -26,7 +26,7 @@ public partial class GroupsPage : ContentPage
         var name = NewGroupName.Text?.Trim();
         if (string.IsNullOrEmpty(name))
         {
-            await DisplayAlertAsync("Error", "Group name is required", "OK");
+            await DisplayAlert("Error", "Group name is required", "OK");
             return;
         }
 
@@ -49,13 +49,13 @@ public partial class GroupsPage : ContentPage
             NewGroupDescription.Text = string.Empty;
             // Notify user whether group was created on cloud or only locally
             if (created.CloudId != 0)
-                await DisplayAlertAsync("Success", "Group created on cloud and synced!", "OK");
+                await DisplayAlert("Success", "Group created on cloud and synced!", "OK");
             else
-                await DisplayAlertAsync("Success", "Group created locally (offline). It will sync when cloud is available.", "OK");
+                await DisplayAlert("Success", "Group created locally (offline). It will sync when cloud is available.", "OK");
         }
         else
         {
-            await DisplayAlertAsync("Error", "Failed to create group", "OK");
+            await DisplayAlert("Error", "Failed to create group", "OK");
         }
     }
 
@@ -85,7 +85,7 @@ public partial class GroupsPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Group g)
         {
-            var ok = await DisplayAlertAsync("Delete", $"Delete group '{g.Name}'?", "Yes", "No");
+            var ok = await DisplayAlert("Delete", $"Delete group '{g.Name}'?", "Yes", "No");
             if (!ok) return;
 
             var success = await _groupService.DeleteGroupAsync(g.Id);

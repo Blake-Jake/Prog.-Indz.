@@ -30,28 +30,28 @@ public partial class LoginPage : ContentPage
         if (_authService == null)
         {
             System.Diagnostics.Debug.WriteLine($"[LoginPage] ERROR: HybridAuthService is NULL!");
-            await DisplayAlertAsync("Error", "Authentication service not initialized", "OK");
+            await DisplayAlert("Error", "Authentication service not initialized", "OK");
             return;
         }
 
         if (string.IsNullOrEmpty(email))
         {
             System.Diagnostics.Debug.WriteLine($"[LoginPage] ERROR: Email is empty!");
-            await DisplayAlertAsync("Error", "Please enter email", "OK");
+            await DisplayAlert("Error", "Please enter email", "OK");
             return;
         }
 
         if (string.IsNullOrEmpty(password))
         {
             System.Diagnostics.Debug.WriteLine($"[LoginPage] ERROR: Password is empty!");
-            await DisplayAlertAsync("Error", "Please enter password", "OK");
+            await DisplayAlert("Error", "Please enter password", "OK");
             return;
         }
 
         var user = await _authService.LoginAsync(email, password);
         if (user != null)
         {
-            await DisplayAlertAsync("Success", "Login successful!", "OK");
+            await DisplayAlert("Success", "Login successful!", "OK");
 
             // Store normalized email in session (lowercase and trimmed)
             Session.CurrentUserEmail = email.ToLower().Trim();
@@ -109,7 +109,7 @@ public partial class LoginPage : ContentPage
         else
         {
             System.Diagnostics.Debug.WriteLine($"[LoginPage] Login failed for email: {email}");
-            await DisplayAlertAsync("Error", "Invalid email or password.", "OK");
+            await DisplayAlert("Error", "Invalid email or password.", "OK");
         }
     }
 
