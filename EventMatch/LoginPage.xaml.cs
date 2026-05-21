@@ -14,7 +14,6 @@ public partial class LoginPage : ContentPage
         _authService = Application.Current?.Handler?.MauiContext?.Services.GetService<HybridAuthService>()!;
     }
 
-
     private async void OnSignUpTapped(object? sender, TappedEventArgs e)
     {
         await Shell.Current.GoToAsync("//SignUpPage");
@@ -30,28 +29,28 @@ public partial class LoginPage : ContentPage
         if (_authService == null)
         {
             System.Diagnostics.Debug.WriteLine($"[LoginPage] ERROR: HybridAuthService is NULL!");
-            await DisplayAlert("Error", "Authentication service not initialized", "OK");
+            await DisplayAlertAsync("Error", "Authentication service not initialized", "OK");
             return;
         }
 
         if (string.IsNullOrEmpty(email))
         {
             System.Diagnostics.Debug.WriteLine($"[LoginPage] ERROR: Email is empty!");
-            await DisplayAlert("Error", "Please enter email", "OK");
+            await DisplayAlertAsync("Error", "Please enter email", "OK");
             return;
         }
 
         if (string.IsNullOrEmpty(password))
         {
             System.Diagnostics.Debug.WriteLine($"[LoginPage] ERROR: Password is empty!");
-            await DisplayAlert("Error", "Please enter password", "OK");
+            await DisplayAlertAsync("Error", "Please enter password", "OK");
             return;
         }
 
         var user = await _authService.LoginAsync(email, password);
         if (user != null)
         {
-            await DisplayAlert("Success", "Login successful!", "OK");
+            await DisplayAlertAsync("Success", "Login successful!", "OK");
 
             // Store normalized email in session (lowercase and trimmed)
             Session.CurrentUserEmail = email.ToLower().Trim();
@@ -78,7 +77,6 @@ public partial class LoginPage : ContentPage
             {
                 System.Diagnostics.Debug.WriteLine($"[LoginPage] Error while syncing to cloud: {ex.Message}");
             }
-
 
             // Ensure a profile exists locally so header can show username
             try
@@ -109,8 +107,77 @@ public partial class LoginPage : ContentPage
         else
         {
             System.Diagnostics.Debug.WriteLine($"[LoginPage] Login failed for email: {email}");
-            await DisplayAlert("Error", "Invalid email or password.", "OK");
+            await DisplayAlertAsync("Error", "Invalid email or password.", "OK");
         }
+    }
+    private async Task LoginWithGoogle()
+    {
+        try
+        {
+            var authUrl = new Uri(
+                "https://accounts.google.com/o/oauth2/v2/auth" +
+                "?client_id=713828107524-71eksm0nji1d4ii19tlnn7ans6fa5n9q.apps.googleusercontent.com" +
+                "&redirect_uri=eventmatch://auth" +
+                "&response_type=token" +
+                "&scope=openid%20profile%20email");
+
+            var callbackUrl = new Uri("eventmatch://auth");
+
+            System.Diagnostics.Debug.WriteLine("BEFORE AUTH");
+
+            var result = await WebAuthenticator.Default.AuthenticateAsync(authUrl, callbackUrl);
+
+            System.Diagnostics.Debug.WriteLine("AFTER AUTH");
+
+            var accessToken = result?.AccessToken;
+
+            await DisplayAlert("SUCCESS", accessToken ?? "NO TOKEN", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("ERROR", ex.ToString(), "OK");
+
+            System.Diagnostics.Debug.WriteLine(ex.ToString());
+        }
+    }
+    /*private async Task LoginWithGoogle()
+    {
+        var authUrl = new Uri(
+            "https://accounts.google.com/o/oauth2/v2/auth" +
+            "?client_id=713828107524-71eksm0nji1d4ii19tlnn7ans6fa5n9q.apps.googleusercontent.com" +
+            "&redirect_uri=EventMatch://auth" +
+            "&response_type=token" +
+            "&scope=openid profile email");
+
+        var callbackUrl = new Uri("EventMatch://auth");
+
+        var result = await WebAuthenticator.Default.AuthenticateAsync(authUrl, callbackUrl);
+
+        var accessToken = result?.AccessToken;
+
+        if (accessToken != null)
+        {
+            var email = result?.Properties.ContainsKey("email") == true
+                ? result.Properties["email"]
+                : "emattt254@gmail.com";
+
+            Session.CurrentUserEmail = email.ToLower().Trim();
+
+            Preferences.Set("UserAlreadyLoggedIn", true);
+
+            await DisplayAlertAsync("Success", "Google login successful!", "OK");
+
+            await Shell.Current.GoToAsync("//EventPreview");
+        }
+        else
+        {
+            await DisplayAlertAsync("Error", "Google login failed", "OK");
+        }
+    }*/
+
+    private async void OnGoogleLoginClicked(object sender, EventArgs e)
+    {
+        await LoginWithGoogle();
     }
 
     protected override void OnAppearing()

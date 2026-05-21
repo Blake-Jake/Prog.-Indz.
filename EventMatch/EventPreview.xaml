@@ -1,11 +1,13 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="EventMatch.EventPreview"
-             Title="ReviewEvents"
-             BackgroundColor="#121212">
+             BackgroundColor="#121212"
+             Shell.NavBarIsVisible="False">
 
     <Grid>
-        <Label Text="Event Preview" FontSize="20" TextColor="White" HorizontalOptions="Center" />
+        <Label Text="Event Preview" FontSize="20" TextColor="White" HorizontalOptions="Start"
+       Margin="20,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold"/>
         <Image x:Name="EventImage"
                Aspect="AspectFill"
                HorizontalOptions="Fill"
@@ -29,32 +31,38 @@
                            Text="No events at the moment"
                            FontSize="16"
                            TextColor="White"
+                           FontFamily="Poppins"
                            HorizontalOptions="Center"
                            IsVisible="False"/>
 
                     <Label Text="Event"
                            FontSize="20"
                            TextColor="White"
+                           FontFamily="Poppins"
                            FontAttributes="Bold"/>
 
                     <Label x:Name="EventDetailsLabel"
                            TextColor="White"
-                           FontSize="14"/>
+                           FontSize="14"
+                           FontFamily="Poppins"/>
 
                     <Label x:Name="LocationLabel"
                            TextColor="#D8BFD8"
                            FontSize="13"
-                           IsVisible="False"/>
+                           IsVisible="False"
+                           FontFamily="Poppins"/>
 
                     <Label x:Name="TagsLabel"
                            TextColor="#A259FF"
                            FontSize="12"
                            FontAttributes="Bold"
-                           IsVisible="False"/>
+                           IsVisible="False"
+                           FontFamily="Poppins"/>
 
                     <Label x:Name="CreatedAtLabel"
                            FontSize="12"
-                           TextColor="#D8BFD8"/>
+                           TextColor="#D8BFD8"
+                           FontFamily="Poppins"/>
                 </StackLayout>
             </Grid>
         </Border>

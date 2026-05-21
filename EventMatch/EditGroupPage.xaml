@@ -2,15 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="EventMatch.EditGroupPage"
-             Title="Edit Group">
+             BackgroundImageSource="download_p.jpg"
+             Shell.NavBarIsVisible="False">
+    
     <StackLayout Padding="20" Spacing="12">
-        <Label Text="Edit Group" FontSize="20" HorizontalOptions="Center" />
+        <Label Text="Create Event" FontSize="20" TextColor="White" HorizontalOptions="Start"
+            Margin="10,8,0,0"
+            FontFamily="Poppins" FontAttributes="Bold" />
 
-        <Label Text="Name" />
-        <Entry x:Name="NameEntry" Placeholder="Group name" />
+        <Label Text="Name" TextColor="White"/>
+        <Entry x:Name="NameEntry" Placeholder="Group name" TextColor="White"/>
 
-        <Label Text="Description" />
-        <Editor x:Name="DescriptionEditor" HeightRequest="100" />
+        <Label Text="Description" TextColor="White"/>
+        <Editor x:Name="DescriptionEditor" HeightRequest="100" TextColor="White"/>
 
         <StackLayout Orientation="Horizontal" Spacing="12">
             <Button Text="Save" Clicked="OnSaveClicked" HorizontalOptions="FillAndExpand" />

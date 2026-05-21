@@ -3,9 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="EventMatch.FriendsPage"
              BackgroundImageSource="download_p.jpg"
-             Title="Friends">
+             Shell.NavBarIsVisible="False">
     <StackLayout Padding="20" Spacing="16">
-        <Label Text="Your Friends" TextColor="White" FontSize="24" HorizontalOptions="Center" />
+        <Label Text="Your Friends" FontSize="20" TextColor="White" HorizontalOptions="Start"
+       Margin="10,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold" />
         <CollectionView x:Name="FriendsListView" ItemsSource="{Binding Friends}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -19,7 +21,9 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Label Text="Pending Requests" TextColor="White" FontSize="20" HorizontalOptions="Center" />
+        <Label Text="Pending Requests" TextColor="White" FontSize="15" HorizontalOptions="Start"
+       Margin="10,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold"/>
         <CollectionView x:Name="PendingRequestsListView" ItemsSource="{Binding PendingRequests}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -34,8 +38,10 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Label Text="Add New Friends" TextColor="White" FontSize="20" HorizontalOptions="Center" />
-        <SearchBar x:Name="UserSearchBar" Placeholder="Search users..." TextChanged="OnSearchTextChanged" />
+        <Label Text="Add New Friends" TextColor="White" FontSize="15" HorizontalOptions="Start"
+       Margin="10,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold"/>
+        <SearchBar x:Name="UserSearchBar" Placeholder="Search users..." TextChanged="OnSearchTextChanged" TextColor="White"/>
         <CollectionView x:Name="UnaddedUsersListView" ItemsSource="{Binding UnaddedUsers}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>

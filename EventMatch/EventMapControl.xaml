@@ -2,13 +2,14 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="EventMatch.EventMapControl"
-    Title="Event map">
+    Shell.NavBarIsVisible="False"
+    BackgroundImageSource="download_p.jpg">
 
     <VerticalStackLayout Padding="10" x:Name="MainLayout">
 
-        <Label Text="Event map"
-               FontSize="20"
-               HorizontalOptions="Center" />
+        <Label Text="Event Map" FontSize="20" TextColor="White" HorizontalOptions="Start"
+       Margin="15,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold" />
 
     </VerticalStackLayout>
 

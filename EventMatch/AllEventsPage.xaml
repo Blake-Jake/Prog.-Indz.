@@ -5,7 +5,7 @@
              xmlns:conv="clr-namespace:EventMatch.Converters"
              x:Class="EventMatch.AllEventsPage"
              BackgroundImageSource="download_p.jpg"
-             Title="My events">
+             Shell.NavBarIsVisible="False">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -16,7 +16,9 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="12">
             <HorizontalStackLayout HorizontalOptions="Fill" Spacing="12">
-                <Label Text="My events" FontSize="20" TextColor="White" HorizontalOptions="StartAndExpand" />
+                <Label Text="My Events" FontSize="20" TextColor="White" HorizontalOptions="Start"
+       Margin="15,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold" />
                 <Button x:Name="SelectAllButton" Text="Select All" IsVisible="False" Clicked="OnSelectAllClicked" BackgroundColor="#666666" TextColor="White" CornerRadius="8" WidthRequest="110" HorizontalOptions="End" />
                 <Button x:Name="UninterestedButton" Text="I'm not interested anymore" Clicked="OnUninterestedClicked" BackgroundColor="#9932CC" TextColor="White" CornerRadius="8" WidthRequest="220" HorizontalOptions="End" />
             </HorizontalStackLayout>

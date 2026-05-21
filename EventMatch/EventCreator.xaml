@@ -3,10 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="EventMatch.EventCreator"
              BackgroundImageSource="download_p.jpg"
-             Title="CreateEvent">
+             Shell.NavBarIsVisible="False">
     
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="12">
+            <Label Text="Create Event" FontSize="20" TextColor="White" HorizontalOptions="Start"
+            Margin="0,8,0,0"
+            FontFamily="Poppins" FontAttributes="Bold" />
             <!-- Tall rectangle where images will later be loaded -->
             <Frame HasShadow="False" CornerRadius="8" BackgroundColor="#333333" HeightRequest="420" HorizontalOptions="Fill" VerticalOptions="Start">
                 <Grid>
@@ -40,14 +43,16 @@
 
             <!-- Date & Time pickers -->
             <HorizontalStackLayout Spacing="12" VerticalOptions="Center" HorizontalOptions="Fill">
-                <DatePicker x:Name="EventDatePicker" />
-                <TimePicker x:Name="EventTimePicker" />
+                <DatePicker x:Name="EventDatePicker" 
+                            TextColor="White"/>
+                <TimePicker x:Name="EventTimePicker" 
+                            TextColor="White"/>
             </HorizontalStackLayout>
 
             <!-- Buttons row -->
             <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
                 <Button Text="Pick Location"
-            BackgroundColor="#444"
+            BackgroundColor="#5B21B6"
             TextColor="White"
             CornerRadius="8"
             Clicked="OnPickLocationClicked"/>

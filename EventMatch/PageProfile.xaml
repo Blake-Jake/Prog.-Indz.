@@ -3,14 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="EventMatch.ProfilePage"
              BackgroundImageSource="download_p.jpg"
-             Title="Profile">
+             Shell.NavBarIsVisible="False">
 
     <ScrollView>
         <Grid RowDefinitions="*,Auto,*" ColumnDefinitions="*">
             <Image Source="loginBackground.jpg" Aspect="AspectFill" />
 
             <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="400" Spacing="18" Padding="24">
-                <Label Text="Profile" FontSize="36" FontFamily="Segoe UI Semibold" TextColor="#D8BFD8" HorizontalOptions="Center"/>
+                <Label Text="Profile" FontSize="20" TextColor="White" HorizontalOptions="Start"
+       Margin="10,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold"/>
 
                 <Border Background="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 20" Padding="18"/>
 
@@ -39,7 +41,7 @@
                             Grid.Column="1"
                             Grid.Row="2"
                             Text="Select Tags"
-                            BackgroundColor="#6A5ACD"
+                            BackgroundColor="#6366F1"
                             TextColor="White"
                             CornerRadius="8"
                             HeightRequest="40"
@@ -89,7 +91,7 @@
                 </VerticalStackLayout>
 
                 <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
-                    <Button Text="Friends" BackgroundColor="#A259FF" TextColor="White" FontAttributes="Bold" CornerRadius="8" HeightRequest="48" WidthRequest="110" Clicked="OnFriendsClicked"/>
+                    <Button Text="Friends" BackgroundColor="#6366F1" TextColor="White" FontAttributes="Bold" CornerRadius="8" HeightRequest="48" WidthRequest="110" Clicked="OnFriendsClicked"/>
                     <Button Text="My Events" BackgroundColor="#6A5ACD" TextColor="White" FontAttributes="Bold" CornerRadius="8" HeightRequest="48" WidthRequest="110" Clicked="OnMyEventsClicked"/>
                     <Button Text="Save" BackgroundColor="#2E8B57" TextColor="White" CornerRadius="8" HeightRequest="48" WidthRequest="110" Clicked="OnSaveClicked"/>
                 </HorizontalStackLayout>

@@ -3,9 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="EventMatch.GroupsPage"
              BackgroundImageSource="download_p.jpg"
-             Title="Groups">
+             Title="Groups"
+             Shell.NavBarIsVisible="False">
     <StackLayout Padding="20" Spacing="12">
-        <Label Text="Groups" TextColor="White" FontSize="24" HorizontalOptions="Center" />
+        <Label Text="Groups" FontSize="20" TextColor="White" HorizontalOptions="Start"
+       Margin="15,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold" />
 
         <CollectionView x:Name="GroupsListView" ItemsSource="{Binding Groups}" SelectionMode="None">
             <CollectionView.ItemTemplate>
@@ -35,9 +38,11 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Label Text="Create Group" TextColor="White" FontSize="20" HorizontalOptions="Center" />
-        <Entry x:Name="NewGroupName" Placeholder="Group name" />
-        <Entry x:Name="NewGroupDescription" Placeholder="Description" />
+        <Label Text="Create Group" TextColor="White" FontSize="15" HorizontalOptions="Start"
+       Margin="10,8,0,0"
+       FontFamily="Poppins" FontAttributes="Bold"/>
+        <Entry x:Name="NewGroupName" Placeholder="Group name" FontFamily="Poppins" />
+        <Entry x:Name="NewGroupDescription" Placeholder="Description" FontFamily="Poppins"/>
         <Button Text="Create" BackgroundColor="#6025d7" TextColor="White" FontAttributes="Bold" CornerRadius="8" HeightRequest="28" WidthRequest="200" Clicked="OnCreateGroupClicked" />
     </StackLayout>
 </ContentPage>
