@@ -19,18 +19,7 @@ namespace EventMatch.Services
             try
             {
                 var all = JsonSerializer.Deserialize<List<Event>>(json) ?? new List<Event>();
-
-                // Purge events whose scheduled date has already passed (compare by date only, local time)
-                var today = DateTime.Now.Date;
-                var valid = all.Where(e => e.ScheduledAt.Date >= today).ToList();
-
-                if (valid.Count != all.Count)
-                {
-                    // Save back the filtered list so expired events are removed from storage
-                    SaveAll(valid);
-                }
-
-                return valid;
+                return all;
             }
             catch
             {
@@ -49,6 +38,11 @@ namespace EventMatch.Services
             var all = LoadAll();
             all.Add(e);
             SaveAll(all);
+        }
+
+        public void DeleteAll()
+        {
+            Preferences.Remove(EventsKey);
         }
     }
 }

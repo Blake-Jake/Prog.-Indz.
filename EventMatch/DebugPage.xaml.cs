@@ -113,4 +113,27 @@ public partial class DebugPage : ContentPage
             await DisplayAlert("Error", ex.Message, "OK");
         }
     }
+
+    private async void OnDeleteAllEventsClicked(object sender, EventArgs e)
+    {
+        bool confirm = await DisplayAlert(
+            "Warning",
+            "This will delete ALL created events. This cannot be undone!",
+            "Yes, delete",
+            "Cancel");
+
+        if (confirm)
+        {
+            try
+            {
+                var eventStore = new EventStore();
+                eventStore.DeleteAll();
+                await DisplayAlert("Success", "All events have been deleted.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to delete events: {ex.Message}", "OK");
+            }
+        }
+    }
 }

@@ -83,7 +83,12 @@ Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (h
             // Register cloud-only services always
             builder.Services.AddSingleton<CloudAuthService>();
             builder.Services.AddSingleton<CloudGroupService>();
+            builder.Services.AddSingleton<CloudEventService>();
             builder.Services.AddSingleton<NotificationService>();
+
+            // Register local event store and sync service
+            builder.Services.AddSingleton<EventStore>();
+            builder.Services.AddSingleton<EventSyncService>();
 
             // Register local DB and hybrid services only when not in cloud-only mode
             if (!cloudOnly)
@@ -103,6 +108,14 @@ Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (h
                     var userDb = sp.GetRequiredService<UserDatabase>();
                     var cloudAuth = sp.GetRequiredService<CloudAuthService>();
                     return new HybridGroupService(cloudGroup, userDb, cloudAuth);
+                });
+
+                // Register hybrid event store for cross-device event sync
+                builder.Services.AddSingleton<HybridEventStore>(sp =>
+                {
+                    var cloudEventService = sp.GetRequiredService<CloudEventService>();
+                    var eventStore = sp.GetRequiredService<EventStore>();
+                    return new HybridEventStore(cloudEventService, eventStore);
                 });
             }
 

@@ -71,6 +71,12 @@
                 TextColor="White"/>
 
             <Button 
+                Text="Delete All Events"
+                Clicked="OnDeleteAllEventsClicked"
+                BackgroundColor="DarkRed"
+                TextColor="White"/>
+
+            <Button 
                 Text="Test Notification"
                 Clicked="OnTestNotificationClicked"
                 BackgroundColor="Purple"

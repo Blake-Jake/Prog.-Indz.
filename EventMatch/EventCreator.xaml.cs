@@ -14,14 +14,14 @@ public partial class EventCreator : ContentPage
     double selectedLat;
     double selectedLng;
 
+    private UploadingImage _uploader = new UploadingImage();
+    private string? _pickedImageBase64;
+    private EventStore _store = new EventStore();
+
     public EventCreator()
     {
         InitializeComponent();
     }
-
-    private UploadingImage _uploader = new UploadingImage();
-    private string? _pickedImageBase64;
-    private EventStore _store = new EventStore();
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
@@ -63,9 +63,10 @@ public partial class EventCreator : ContentPage
             Tags = tags
         };
 
+        // Save to local storage only
         _store.Add(newEvent);
 
-        await DisplayAlert("Saved", "Event saved.", "OK");
+        await DisplayAlert("Saved", "Event saved locally.", "OK");
         await Shell.Current.GoToAsync("..", true);
     }
 

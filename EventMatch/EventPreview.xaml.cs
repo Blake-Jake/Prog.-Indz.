@@ -58,7 +58,7 @@ public partial class EventPreview : ContentPage
     {
         base.OnAppearing();
 
-        // Load all events, and exclude those already favorited by the current user.
+        // Load all events from local storage only
         var currentUser = Session.CurrentUserEmail;
         var store = new EventStore();
         var allEvents = store.LoadAll();
@@ -262,19 +262,6 @@ public partial class EventPreview : ContentPage
             // After favoriting, move to the next event
             _currentIndex = (_currentIndex + 1) % _items.Count;
             UpdateDisplayedEvent();
-            }
-
-            private async void OnTestNotificationClicked(object sender, EventArgs e)
-            {
-                try
-                {
-                    await NotificationTestHelper.TriggerTestNotificationAsync();
-                    await DisplayAlert("✅ Test Notification", "Check your system notifications! A test event scheduled for 1 hour from now has been created.", "OK");
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert("❌ Error", $"Failed to trigger notification: {ex.Message}", "OK");
-                }
             }
         }
 
