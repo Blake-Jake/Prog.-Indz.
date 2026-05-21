@@ -16,11 +16,14 @@ public partial class EventCreator : ContentPage
 
     private UploadingImage _uploader = new UploadingImage();
     private string? _pickedImageBase64;
-    private EventStore _store = new EventStore();
+    private HybridEventStore? _hybridEventStore;
 
     public EventCreator()
     {
         InitializeComponent();
+
+        // Get HybridEventStore from DI
+        _hybridEventStore = Application.Current?.Handler?.MauiContext?.Services.GetService<HybridEventStore>();
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
@@ -63,10 +66,26 @@ public partial class EventCreator : ContentPage
             Tags = tags
         };
 
-        // Save to local storage only
-        _store.Add(newEvent);
+        if (_hybridEventStore != null)
+        {
+            // Initialize with current user if available
+            var currentUser = Session.CurrentUserEmail;
+            if (!string.IsNullOrEmpty(currentUser))
+            {
+                await _hybridEventStore.InitializeAsync(currentUser);
+            }
 
-        await DisplayAlert("Saved", "Event saved locally.", "OK");
+            // Use hybrid store (syncs to cloud if available, otherwise saves locally)
+            await _hybridEventStore.AddAsync(newEvent);
+        }
+        else
+        {
+            // Fallback to local store if hybrid not available
+            var localStore = new EventStore();
+            localStore.Add(newEvent);
+        }
+
+        await DisplayAlert("Saved", "Event saved." + (_hybridEventStore?.IsCloudAvailable == true ? " (Synced to cloud)" : " (Local only)"), "OK");
         await Shell.Current.GoToAsync("..", true);
     }
 

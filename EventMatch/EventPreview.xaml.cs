@@ -58,10 +58,26 @@ public partial class EventPreview : ContentPage
     {
         base.OnAppearing();
 
-        // Load all events from local storage only
+        // Load all events, trying cloud first, then falling back to local
         var currentUser = Session.CurrentUserEmail;
-        var store = new EventStore();
-        var allEvents = store.LoadAll();
+        var hybridStore = Application.Current?.Handler?.MauiContext?.Services.GetService<HybridEventStore>();
+
+        List<Event> allEvents = new();
+
+        if (hybridStore != null)
+        {
+            if (!string.IsNullOrEmpty(currentUser))
+            {
+                await hybridStore.InitializeAsync(currentUser);
+            }
+            allEvents = await hybridStore.LoadAllAsync();
+        }
+        else
+        {
+            // Fallback to local store
+            var store = new EventStore();
+            allEvents = store.LoadAll();
+        }
 
         // Get user's preferred tags for filtering/prioritization
         var userDb = Application.Current?.Handler?.MauiContext?.Services.GetService<UserDatabase>();
